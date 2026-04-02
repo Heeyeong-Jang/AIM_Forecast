@@ -14,7 +14,174 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      forecast_adjustments: {
+        Row: {
+          adjustment_pct: number | null
+          created_at: string | null
+          id: string
+          month: number
+          product_id: string | null
+          reason: string | null
+          year: number
+        }
+        Insert: {
+          adjustment_pct?: number | null
+          created_at?: string | null
+          id?: string
+          month: number
+          product_id?: string | null
+          reason?: string | null
+          year: number
+        }
+        Update: {
+          adjustment_pct?: number | null
+          created_at?: string | null
+          id?: string
+          month?: number
+          product_id?: string | null
+          reason?: string | null
+          year?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "forecast_adjustments_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "forecast_products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      forecast_products: {
+        Row: {
+          category: string | null
+          created_at: string | null
+          id: string
+          name: string
+          unit: string | null
+          volume: string | null
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string | null
+          id?: string
+          name: string
+          unit?: string | null
+          volume?: string | null
+        }
+        Update: {
+          category?: string | null
+          created_at?: string | null
+          id?: string
+          name?: string
+          unit?: string | null
+          volume?: string | null
+        }
+        Relationships: []
+      }
+      forecast_results: {
+        Row: {
+          base_forecast: number | null
+          calculated_at: string | null
+          final_forecast: number | null
+          id: string
+          month: number
+          product_id: string | null
+          season_adjusted: number | null
+          year: number
+        }
+        Insert: {
+          base_forecast?: number | null
+          calculated_at?: string | null
+          final_forecast?: number | null
+          id?: string
+          month: number
+          product_id?: string | null
+          season_adjusted?: number | null
+          year: number
+        }
+        Update: {
+          base_forecast?: number | null
+          calculated_at?: string | null
+          final_forecast?: number | null
+          id?: string
+          month?: number
+          product_id?: string | null
+          season_adjusted?: number | null
+          year?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "forecast_results_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "forecast_products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      forecast_sales_history: {
+        Row: {
+          actual_quantity: number | null
+          channel: string | null
+          created_at: string | null
+          id: string
+          month: number
+          product_id: string | null
+          year: number
+        }
+        Insert: {
+          actual_quantity?: number | null
+          channel?: string | null
+          created_at?: string | null
+          id?: string
+          month: number
+          product_id?: string | null
+          year: number
+        }
+        Update: {
+          actual_quantity?: number | null
+          channel?: string | null
+          created_at?: string | null
+          id?: string
+          month?: number
+          product_id?: string | null
+          year?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "forecast_sales_history_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "forecast_products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      forecast_season_coefficients: {
+        Row: {
+          coefficient: number | null
+          id: string
+          label: string | null
+          month: number
+          updated_at: string | null
+        }
+        Insert: {
+          coefficient?: number | null
+          id?: string
+          label?: string | null
+          month: number
+          updated_at?: string | null
+        }
+        Update: {
+          coefficient?: number | null
+          id?: string
+          label?: string | null
+          month?: number
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
