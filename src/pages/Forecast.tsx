@@ -5,6 +5,7 @@ import ProductManager from "@/components/forecast/ProductManager";
 import SalesHistoryManager from "@/components/forecast/SalesHistoryManager";
 import SeasonSettings from "@/components/forecast/SeasonSettings";
 import CampaignAdjustments from "@/components/forecast/CampaignAdjustments";
+import ForecastAccuracy from "@/components/forecast/ForecastAccuracy";
 import ForecastUpdateButton from "@/components/forecast/ForecastUpdateButton";
 
 export default function Forecast() {
