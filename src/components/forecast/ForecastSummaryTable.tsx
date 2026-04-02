@@ -15,7 +15,7 @@ export default function ForecastSummaryTable() {
   return (
     <Card className="w-full">
       <CardHeader className="pb-2">
-        <CardTitle className="text-base font-semibold">이번달 예측 요약</CardTitle>
+        <CardTitle className="text-base font-semibold">{new Date().getMonth() + 1}월 예측 요약</CardTitle>
       </CardHeader>
       <CardContent>
         {isLoading ? (
