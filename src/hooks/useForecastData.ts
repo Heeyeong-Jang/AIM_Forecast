@@ -108,15 +108,14 @@ export function useMonthlyForecastChart() {
 }
 
 export function useCurrentMonthSummary() {
-  const next = getNextMonth();
   return useQuery({
-    queryKey: ["forecast-summary", next.year, next.month],
+    queryKey: ["forecast-summary", currentYear, currentMonth],
     queryFn: async () => {
       const { data: results } = await supabase
         .from("forecast_results")
         .select("product_id, base_forecast, season_adjusted, final_forecast")
-        .eq("year", next.year)
-        .eq("month", next.month);
+        .eq("year", currentYear)
+        .eq("month", currentMonth);
 
       const { data: products } = await supabase
         .from("forecast_products")
