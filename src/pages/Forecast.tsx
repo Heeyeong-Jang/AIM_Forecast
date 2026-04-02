@@ -36,6 +36,7 @@ export default function Forecast() {
         </div>
 
         <ProductManager />
+        <CampaignAdjustments />
         <div data-section="sales-history">
           <SalesHistoryManager />
         </div>
