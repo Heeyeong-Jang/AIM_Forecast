@@ -1,0 +1,1 @@
+ALTER TABLE public.forecast_adjustments ADD CONSTRAINT forecast_adjustments_product_year_month_unique UNIQUE (product_id, year, month);
