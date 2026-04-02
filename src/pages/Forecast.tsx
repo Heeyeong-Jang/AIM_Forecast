@@ -2,6 +2,7 @@ import MetricCards from "@/components/forecast/MetricCards";
 import ForecastChart from "@/components/forecast/ForecastChart";
 import ForecastSummaryTable from "@/components/forecast/ForecastSummaryTable";
 import ProductManager from "@/components/forecast/ProductManager";
+import SalesHistoryManager from "@/components/forecast/SalesHistoryManager";
 
 export default function Forecast() {
   return (
