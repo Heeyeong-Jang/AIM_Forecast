@@ -4,6 +4,7 @@ import ForecastSummaryTable from "@/components/forecast/ForecastSummaryTable";
 import ProductManager from "@/components/forecast/ProductManager";
 import SalesHistoryManager from "@/components/forecast/SalesHistoryManager";
 import SeasonSettings from "@/components/forecast/SeasonSettings";
+import CampaignAdjustments from "@/components/forecast/CampaignAdjustments";
 import ForecastUpdateButton from "@/components/forecast/ForecastUpdateButton";
 
 export default function Forecast() {
@@ -35,6 +36,7 @@ export default function Forecast() {
         </div>
 
         <ProductManager />
+        <CampaignAdjustments />
         <div data-section="sales-history">
           <SalesHistoryManager />
         </div>
