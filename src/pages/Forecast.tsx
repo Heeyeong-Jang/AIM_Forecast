@@ -27,6 +27,7 @@ export default function Forecast() {
         </div>
 
         <ProductManager />
+        <SalesHistoryManager />
       </main>
     </div>
   );
