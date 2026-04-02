@@ -3,6 +3,7 @@ import ForecastChart from "@/components/forecast/ForecastChart";
 import ForecastSummaryTable from "@/components/forecast/ForecastSummaryTable";
 import ProductManager from "@/components/forecast/ProductManager";
 import SalesHistoryManager from "@/components/forecast/SalesHistoryManager";
+import SeasonSettings from "@/components/forecast/SeasonSettings";
 import ForecastUpdateButton from "@/components/forecast/ForecastUpdateButton";
 
 export default function Forecast() {
