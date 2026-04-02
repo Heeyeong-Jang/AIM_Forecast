@@ -1,6 +1,7 @@
 import MetricCards from "@/components/forecast/MetricCards";
 import ForecastChart from "@/components/forecast/ForecastChart";
 import ForecastSummaryTable from "@/components/forecast/ForecastSummaryTable";
+import ProductManager from "@/components/forecast/ProductManager";
 
 export default function Forecast() {
   return (
@@ -23,6 +24,8 @@ export default function Forecast() {
             <ForecastSummaryTable />
           </div>
         </div>
+
+        <ProductManager />
       </main>
     </div>
   );
