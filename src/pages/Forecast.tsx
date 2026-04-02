@@ -16,7 +16,10 @@ export default function Forecast() {
             제품별 판매 예측 현황을 한눈에 확인하세요
           </p>
         </div>
-        <ForecastUpdateButton />
+        <div className="flex gap-2">
+          <SeasonSettings />
+          <ForecastUpdateButton />
+        </div>
       </header>
 
       <main className="mx-auto max-w-7xl space-y-6 p-6">
