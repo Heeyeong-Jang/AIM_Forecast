@@ -14,7 +14,7 @@ function getNextMonth() {
 function getNext5Months() {
   const months: { year: number; month: number }[] = [];
   let y = currentYear;
-  let m = currentMonth + 1;
+  let m = currentMonth;
   for (let i = 0; i < 5; i++) {
     if (m > 12) { m = 1; y++; }
     months.push({ year: y, month: m });
