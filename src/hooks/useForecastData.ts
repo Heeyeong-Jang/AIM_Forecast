@@ -124,8 +124,8 @@ export function useCurrentMonthSummary() {
       const { data: adjustments } = await supabase
         .from("forecast_adjustments")
         .select("product_id, adjustment_pct")
-        .eq("year", next.year)
-        .eq("month", next.month);
+        .eq("year", currentYear)
+        .eq("month", currentMonth);
 
       const productMap = new Map((products ?? []).map((p) => [p.id, p.name]));
       const adjMap = new Map(
