@@ -41,6 +41,7 @@ export default function Forecast() {
         <div data-section="sales-history">
           <SalesHistoryManager />
         </div>
+        <ForecastAccuracy />
       </main>
     </div>
   );
