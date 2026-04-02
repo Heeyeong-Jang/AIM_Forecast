@@ -14,7 +14,7 @@ function getNextMonth() {
 function getNext5Months() {
   const months: { year: number; month: number }[] = [];
   let y = currentYear;
-  let m = currentMonth + 1;
+  let m = currentMonth;
   for (let i = 0; i < 5; i++) {
     if (m > 12) { m = 1; y++; }
     months.push({ year: y, month: m });
@@ -108,15 +108,14 @@ export function useMonthlyForecastChart() {
 }
 
 export function useCurrentMonthSummary() {
-  const next = getNextMonth();
   return useQuery({
-    queryKey: ["forecast-summary", next.year, next.month],
+    queryKey: ["forecast-summary", currentYear, currentMonth],
     queryFn: async () => {
       const { data: results } = await supabase
         .from("forecast_results")
         .select("product_id, base_forecast, season_adjusted, final_forecast")
-        .eq("year", next.year)
-        .eq("month", next.month);
+        .eq("year", currentYear)
+        .eq("month", currentMonth);
 
       const { data: products } = await supabase
         .from("forecast_products")
@@ -125,8 +124,8 @@ export function useCurrentMonthSummary() {
       const { data: adjustments } = await supabase
         .from("forecast_adjustments")
         .select("product_id, adjustment_pct")
-        .eq("year", next.year)
-        .eq("month", next.month);
+        .eq("year", currentYear)
+        .eq("month", currentMonth);
 
       const productMap = new Map((products ?? []).map((p) => [p.id, p.name]));
       const adjMap = new Map(
