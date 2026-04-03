@@ -12,56 +12,90 @@ import {
 } from "recharts";
 import { useMonthlyForecastChart, MONTH_LABELS } from "@/hooks/useForecastData";
 
-const COLORS = [
+const FORECAST_COLOR = "hsl(174, 62%, 47%)";
+const ACTUAL_COLOR = "hsl(200, 70%, 50%)";
+
+const PRODUCT_FORECAST_COLORS = [
   "hsl(174, 62%, 47%)",
-  "hsl(200, 70%, 50%)",
   "hsl(260, 60%, 55%)",
   "hsl(30, 80%, 55%)",
   "hsl(340, 65%, 55%)",
   "hsl(90, 55%, 45%)",
+];
+const PRODUCT_ACTUAL_COLORS = [
+  "hsl(174, 62%, 35%)",
+  "hsl(260, 60%, 40%)",
+  "hsl(30, 80%, 40%)",
+  "hsl(340, 65%, 40%)",
+  "hsl(90, 55%, 32%)",
 ];
 
 export default function ForecastChart() {
   const [mode, setMode] = useState<"all" | "product">("all");
   const { data, isLoading } = useMonthlyForecastChart();
 
-  const { chartData, productNames } = useMemo(() => {
-    if (!data) return { chartData: [], productNames: [] as string[] };
+  const { chartData, bars } = useMemo(() => {
+    if (!data) return { chartData: [], bars: [] as { key: string; fill: string }[] };
 
-    const { months, filtered, productMap } = data;
+    const { months, filtered, productMap, salesMap } = data;
     const allNames = [...new Set(filtered.map((r) => productMap.get(r.product_id ?? "") ?? "알 수 없음"))];
 
     if (mode === "all") {
       const cd = months.map((m) => {
-        const total = filtered
+        const forecastTotal = filtered
           .filter((r) => r.year === m.year && r.month === m.month)
           .reduce((s, r) => s + (r.final_forecast ?? 0), 0);
-        return { name: MONTH_LABELS[m.month - 1], 전체: total };
+
+        const monthSales = salesMap.get(`${m.year}-${m.month}`);
+        let actualTotal = 0;
+        if (monthSales) {
+          for (const qty of monthSales.values()) actualTotal += qty;
+        }
+
+        return {
+          name: MONTH_LABELS[m.month - 1],
+          예측량: forecastTotal,
+          실제판매량: actualTotal || undefined,
+        };
       });
-      return { chartData: cd, productNames: ["전체"] };
+      return {
+        chartData: cd,
+        bars: [
+          { key: "예측량", fill: FORECAST_COLOR },
+          { key: "실제판매량", fill: ACTUAL_COLOR },
+        ],
+      };
     }
 
+    // Product mode: forecast + actual per product
     const cd = months.map((m) => {
-      const entry: Record<string, string | number> = { name: MONTH_LABELS[m.month - 1] };
+      const entry: Record<string, string | number | undefined> = { name: MONTH_LABELS[m.month - 1] };
+      const monthSales = salesMap.get(`${m.year}-${m.month}`);
+
       allNames.forEach((pName) => {
-        entry[pName] = filtered
-          .filter(
-            (r) =>
-              r.year === m.year &&
-              r.month === m.month &&
-              productMap.get(r.product_id ?? "") === pName
-          )
+        const pid = [...productMap.entries()].find(([, n]) => n === pName)?.[0];
+        entry[`${pName} 예측`] = filtered
+          .filter((r) => r.year === m.year && r.month === m.month && productMap.get(r.product_id ?? "") === pName)
           .reduce((s, r) => s + (r.final_forecast ?? 0), 0);
+        const actual = pid && monthSales ? monthSales.get(pid) : undefined;
+        entry[`${pName} 실제`] = actual ?? undefined;
       });
       return entry;
     });
-    return { chartData: cd, productNames: allNames };
+
+    const bars: { key: string; fill: string }[] = [];
+    allNames.forEach((name, i) => {
+      bars.push({ key: `${name} 예측`, fill: PRODUCT_FORECAST_COLORS[i % PRODUCT_FORECAST_COLORS.length] });
+      bars.push({ key: `${name} 실제`, fill: PRODUCT_ACTUAL_COLORS[i % PRODUCT_ACTUAL_COLORS.length] });
+    });
+
+    return { chartData: cd, bars };
   }, [data, mode]);
 
   return (
     <Card className="flex-1">
       <CardHeader className="flex flex-row items-center justify-between pb-2">
-        <CardTitle className="text-base font-semibold">월별 예측 현황</CardTitle>
+        <CardTitle className="text-base font-semibold">월별 예측 vs 실제 판매</CardTitle>
         <div className="flex rounded-lg border bg-surface p-0.5 text-sm">
           <button
             onClick={() => setMode("all")}
@@ -90,7 +124,7 @@ export default function ForecastChart() {
           <div className="flex h-[300px] items-center justify-center text-muted-foreground">
             데이터 로딩 중...
           </div>
-        ) : chartData.length === 0 || productNames.length === 0 ? (
+        ) : chartData.length === 0 ? (
           <div className="flex h-[300px] items-center justify-center text-muted-foreground">
             예측 데이터가 없습니다
           </div>
@@ -106,17 +140,11 @@ export default function ForecastChart() {
                   border: "1px solid hsl(var(--border))",
                   borderRadius: "8px",
                 }}
-                formatter={(value: number) => [value.toLocaleString() + "개", undefined]}
+                formatter={(value: number, name: string) => [value?.toLocaleString() + "개", name]}
               />
-              {productNames.length > 1 && <Legend />}
-              {productNames.map((name, i) => (
-                <Bar
-                  key={name}
-                  dataKey={name}
-                  stackId={mode === "product" ? "stack" : undefined}
-                  fill={COLORS[i % COLORS.length]}
-                  radius={[4, 4, 0, 0]}
-                />
+              <Legend />
+              {bars.map((b) => (
+                <Bar key={b.key} dataKey={b.key} fill={b.fill} radius={[4, 4, 0, 0]} />
               ))}
             </BarChart>
           </ResponsiveContainer>

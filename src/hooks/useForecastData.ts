@@ -88,13 +88,11 @@ export function useMonthlyForecastChart() {
   return useQuery({
     queryKey: ["forecast-chart", months],
     queryFn: async () => {
-      const { data: results } = await supabase
-        .from("forecast_results")
-        .select("product_id, year, month, final_forecast");
-
-      const { data: products } = await supabase
-        .from("forecast_products")
-        .select("id, name");
+      const [{ data: results }, { data: products }, { data: sales }] = await Promise.all([
+        supabase.from("forecast_results").select("product_id, year, month, final_forecast"),
+        supabase.from("forecast_products").select("id, name"),
+        supabase.from("forecast_sales_history").select("product_id, year, month, channel, actual_quantity"),
+      ]);
 
       const productMap = new Map((products ?? []).map((p) => [p.id, p.name]));
 
@@ -102,7 +100,16 @@ export function useMonthlyForecastChart() {
         months.some((m) => m.year === r.year && m.month === r.month)
       );
 
-      return { months, filtered, productMap };
+      // Build sales lookup: year-month -> product_id -> qty (use 전체 channel)
+      const salesMap = new Map<string, Map<string, number>>();
+      for (const s of (sales ?? [])) {
+        if (s.channel !== "전체") continue;
+        const key = `${s.year}-${s.month}`;
+        if (!salesMap.has(key)) salesMap.set(key, new Map());
+        salesMap.get(key)!.set(s.product_id ?? "", s.actual_quantity ?? 0);
+      }
+
+      return { months, filtered, productMap, salesMap };
     },
   });
 }
