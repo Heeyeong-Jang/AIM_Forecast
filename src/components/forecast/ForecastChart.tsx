@@ -37,7 +37,7 @@ export default function ForecastChart() {
   const { chartData, bars } = useMemo(() => {
     if (!data) return { chartData: [], bars: [] as { key: string; fill: string }[] };
 
-    const { months, filtered, productMap, salesMap } = data;
+    const { months, filtered, productMap, salesMap = new Map() } = data;
     const allNames = [...new Set(filtered.map((r) => productMap.get(r.product_id ?? "") ?? "알 수 없음"))];
 
     if (mode === "all") {
